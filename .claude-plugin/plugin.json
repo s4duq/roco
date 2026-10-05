@@ -1,6 +1,6 @@
 {
   "name": "roco",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "Pixel-art mascot that reacts live to what Claude does. Pick one of 8, recolor it or create your own with /roco:crear. Mascota pixel art para Claude Code.",
   "author": {
     "name": "s4duq"

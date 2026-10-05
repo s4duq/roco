@@ -1,6 +1,6 @@
 {
   "name": "roco",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "private": true,
   "description": "Conversor de imágenes y pruebas de Roco. El plugin no lo necesita: va aquí y no en la raíz para que instalar el plugin no corra npm.",
   "scripts": {

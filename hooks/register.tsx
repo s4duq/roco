@@ -240,6 +240,12 @@ export const register: Register = (on, options = {}) => {
         return read($, oculto)
       },
       guardar: (clave, valor) => guardarOpcion($, clave, valor),
+      // Sin escribir lo que ya está guardado: cada escritura recarga el módulo.
+      guardarVarios: cambios =>
+        guardarEnOrden(
+          $,
+          cambios.filter(([clave, v]) => String(options[clave.slice(clave.indexOf('.') + 1)] ?? '') !== v),
+        ),
       personajes: async () => listarPersonajes(discoDe($), await carpetasPersonajes($)),
       // Sin $.prompt.submit: en la app de escritorio no arrancó ningún turno (2026-10-04). La guía es
       // la skill roco:crear; esto solo deja a Claude el contexto por si la persona responde aquí.

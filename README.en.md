@@ -53,8 +53,8 @@ The first time you type `/roco`, a **menu with buttons** opens: pick the mascot,
 | `/roco purple`, `/roco gato`, `/roco ocean` | Changes the color, mascot or theme with one word |
 | `/roco make it pink and minimal` | Simple phrases work too, in English or Spanish |
 | `/roco character [id]` | Without an id, lists the available mascots |
-| `/roco color <name or #rrggbb>` | Your own color; empty brings back the theme's |
-| `/roco theme <magma, oceano, bosque, lavanda, mono, auto>` | Strip palette |
+| `/roco color orange` or `/roco color #ff8a3d` | Your own color, by name or code; empty brings back the theme's |
+| `/roco theme <magma, oceano, bosque, lavanda, mono, auto>` | Strip palette (also brings back the theme's color) |
 | `/roco style <completo, compacto, minimo>` | Strip size |
 | `/roco name <text>` | Renames it (max 16 characters) |
 | `/roco language <auto, es, en>` | Language of the texts |

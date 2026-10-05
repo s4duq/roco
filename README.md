@@ -53,8 +53,8 @@ La primera vez que escribes `/roco` se abre un **menú con botones**: eliges la 
 | `/roco morado`, `/roco gato`, `/roco oceano` | Cambia el color, la mascota o el tema con una palabra |
 | `/roco cambia el color a azul` | También entiende frases simples, en español o inglés |
 | `/roco personaje [id]` | Sin id, lista las mascotas disponibles |
-| `/roco color <nombre o #rrggbb>` | Color propio; sin valor, vuelve el del tema |
-| `/roco tema <magma, oceano, bosque, lavanda, mono, auto>` | Paleta de la franja |
+| `/roco color naranja` o `/roco color #ff8a3d` | Color propio, por nombre o por código; sin valor, vuelve el del tema |
+| `/roco tema <magma, oceano, bosque, lavanda, mono, auto>` | Paleta de la franja (también devuelve el color del tema) |
 | `/roco estilo <completo, compacto, minimo>` | Tamaño de la franja |
 | `/roco nombre <texto>` | Le pone otro nombre (máx. 16 caracteres) |
 | `/roco idioma <auto, es, en>` | Idioma de los textos |

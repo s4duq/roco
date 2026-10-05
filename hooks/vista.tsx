@@ -43,7 +43,7 @@ function columnaIzquierda(ui: Piezas, o: Opciones, l: Lectura) {
           return (
             <Box key="estado" flexDirection="row" minWidth={0}>
               <Text bold>
-                {nombreDisplay} <Text color={tema.acento}>·</Text> {tx.animo[ahora.animo]}
+                <Text color={tema.acento}>{nombreDisplay} ·</Text> {tx.animo[ahora.animo]}
               </Text>
               <Text dimColor wrap="truncate-end">
                 {' — '}
@@ -100,7 +100,7 @@ export function franjaTerminal(ui: Piezas, o: Opciones, l: Lectura, estilo: Esti
   if (estilo === 'minimo') {
     return (
       <Text bold>
-        {nombreDisplay} <Text color={tema.acento}>·</Text> {tx.animo[ahora.animo]}
+        <Text color={tema.acento}>{nombreDisplay} ·</Text> {tx.animo[ahora.animo]}
         <Text dimColor> — {ahora.detalle}</Text>
       </Text>
     )
@@ -158,7 +158,7 @@ export function franjaGrafica(ui: PiezasSvg, o: Opciones, l: Lectura, estilo: Es
       <Box flexDirection="row" alignItems="center" gap={1}>
         {dibujar(37)}
         <Text bold>
-          {nombreDisplay} <Text color={tema.acento}>·</Text> {tx.animo[ahora.animo]}
+          <Text color={tema.acento}>{nombreDisplay} ·</Text> {tx.animo[ahora.animo]}
         </Text>
         <Text dimColor wrap="truncate-end">
           {' — '}
@@ -175,7 +175,7 @@ export function franjaGrafica(ui: PiezasSvg, o: Opciones, l: Lectura, estilo: Es
         {dibujar(44)}
         <Box flexDirection="row" flexGrow={1} flexShrink={1} minWidth={0}>
           <Text bold>
-            {nombreDisplay} <Text color={tema.acento}>·</Text> {tx.animo[ahora.animo]}
+            <Text color={tema.acento}>{nombreDisplay} ·</Text> {tx.animo[ahora.animo]}
           </Text>
           <Text dimColor wrap="truncate-end">
             {' — '}

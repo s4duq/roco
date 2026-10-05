@@ -7,6 +7,8 @@ export type Hacer = {
   alternarOculto: () => Promise<boolean>
   // Clave completa, p. ej. 'roco.tema'. Devuelve false si la configuración no lo aceptó.
   guardar: (clave: string, valor: string) => Promise<boolean>
+  // Varios cambios en orden; se salta los que ya tienen ese valor (cada guardado recarga el módulo).
+  guardarVarios: (cambios: Cambio[]) => Promise<boolean>
   // Ids de personaje disponibles, 'roco' primero (listarPersonajes con las carpetas reales).
   personajes: () => Promise<string[]>
   // Asistente de creación: devuelve el contexto que lee Claude (la skill roco:crear hace la guía).
@@ -51,14 +53,19 @@ const RELLENO = new Set(
 
 export type Cambio = [clave: string, valor: string]
 
-// Lo que pide una frase: cada palabra que queda sin relleno debe ser un color, tema, estilo o personaje.
-// null si alguna no se reconoce o no queda ninguna. Si se repite un tipo, gana la última.
+// Con estas palabras la frase pide quitar algo, no ponerlo: mejor no adivinar.
+const NIEGA = new Set(['quita', 'quitar', 'quítale', 'quitale', 'sin', 'no', 'nunca', 'remove', 'without', 'not', "don't", 'dont'])
+
+// Lo que pide una frase: los colores, temas, estilos y personajes que nombra. Las demás palabras
+// ("barra", "letras", "cuerpo"…) se ignoran. null si no nombra ninguno o si niega algo.
+// Si se repite un tipo, gana el último. Un tema sin color propio vuelve al color del tema.
 export function interpretar(frase: string, personajes: readonly string[]): Cambio[] | null {
   const palabras = frase
     .toLowerCase()
-    .replace(/[.,;:!?¡¿"'«»()]/g, ' ')
+    .replace(/[.,;:!?¡¿"«»()]/g, ' ')
     .split(/\s+/)
     .filter(p => p && !RELLENO.has(p))
+  if (palabras.some(p => NIEGA.has(p))) return null
   const cambios = new Map<string, string>()
   for (const p of palabras) {
     const color = colorDe(p)
@@ -66,8 +73,8 @@ export function interpretar(frase: string, personajes: readonly string[]): Cambi
     else if (TEMA_DE[p]) cambios.set('roco.tema', TEMA_DE[p])
     else if (ESTILO_DE[p]) cambios.set('roco.estilo', ESTILO_DE[p])
     else if (personajes.includes(p)) cambios.set('roco.personaje', p)
-    else return null
   }
+  if (cambios.has('roco.tema') && !cambios.has('roco.acento')) cambios.set('roco.acento', '')
   return cambios.size > 0 ? [...cambios] : null
 }
 
@@ -107,18 +114,14 @@ export async function ejecutarRoco(rawArgs: string, nombre: string, tx: Textos, 
 
   // Mensaje de cada cambio guardado por una frase o un color con nombre.
   const listo: Record<string, (v: string) => string> = {
-    'roco.acento': v => tx.comando.colorCambiado(v),
+    'roco.acento': v => (v ? tx.comando.colorCambiado(v) : tx.comando.colorRestablecido),
     'roco.tema': v => tx.comando.temaCambiado(v),
     'roco.estilo': v => tx.comando.estiloCambiado(v),
     'roco.personaje': v => tx.comando.personajeCambiado(v),
   }
   const aplicar = async (cambios: Cambio[]) => {
-    const hechos: string[] = []
-    for (const [clave, v] of cambios) {
-      if (!(await hacer.guardar(clave, v))) return { text: tx.comando.noGuardado }
-      hechos.push(listo[clave](v))
-    }
-    return { text: hechos.join(' ') }
+    if (!(await hacer.guardarVarios(cambios))) return { text: tx.comando.noGuardado }
+    return { text: cambios.map(([clave, v]) => listo[clave](v)).join(' ') }
   }
 
   switch (cmd) {
@@ -132,7 +135,8 @@ export async function ejecutarRoco(rawArgs: string, nombre: string, tx: Textos, 
       return { text: tx.comando.creando, context: await hacer.crear(valor) }
 
     case 'tema':
-      if (TEMAS_VALIDOS.includes(valor)) return guardar('roco.tema', valor, tx.comando.temaCambiado(valor))
+      // Elegir un tema trae también su color (quita el color propio, si había).
+      if (TEMAS_VALIDOS.includes(valor)) return aplicar([['roco.tema', valor], ['roco.acento', '']])
       return { text: tx.comando.temaInvalido(valor, TEMAS_VALIDOS.join(', ')) }
 
     case 'estilo':

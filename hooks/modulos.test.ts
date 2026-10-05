@@ -30,6 +30,10 @@ const falso = (acepta = true, visto = true) => {
         if (acepta) guardados.push([clave, valor])
         return acepta
       },
+      guardarVarios: async (cambios: [string, string][]) => {
+        if (acepta) guardados.push(...cambios)
+        return acepta
+      },
       personajes: async () => ['roco', 'fantasma', 'gato', 'robot'],
       crear: async (descripcion: string) => {
         creados.push(descripcion)
@@ -42,8 +46,12 @@ const falso = (acepta = true, visto = true) => {
 test('/roco tema válido guarda roco.tema', async () => {
   const f = falso()
   const r = await ejecutarRoco('tema oceano', 'Roco', tx, f.hacer)
-  expect(f.guardados).toEqual([['roco.tema', 'oceano']])
-  expect(r.text).toBe(tx.comando.temaCambiado('oceano'))
+  // Elegir un tema también devuelve su color (register.tsx no escribe el acento si ya estaba vacío).
+  expect(f.guardados).toEqual([
+    ['roco.tema', 'oceano'],
+    ['roco.acento', ''],
+  ])
+  expect(r.text).toBe(`${tx.comando.temaCambiado('oceano')} ${tx.comando.colorRestablecido}`)
 })
 
 test('/roco tema inválido no guarda nada', async () => {
@@ -157,6 +165,7 @@ test('/roco entiende frases simples: color, tema, estilo y personaje', async () 
   expect(f.guardados).toEqual([
     ['roco.acento', '#a66cff'],
     ['roco.tema', 'oceano'],
+    ['roco.acento', ''],
     ['roco.personaje', 'gato'],
     ['roco.estilo', 'compacto'],
     ['roco.acento', '#ff6fae'],
@@ -166,7 +175,7 @@ test('/roco entiende frases simples: color, tema, estilo y personaje', async () 
 
 test('/roco con algo que no entiende no guarda nada y remite al menú y a /roco:crear', async () => {
   const f = falso()
-  for (const frase of ['hazme un dragón', 'cambia el color a fucsia', 'gato dragón']) {
+  for (const frase of ['hazme un dragón', 'cambia el color a fucsia', 'quita el gato', 'no quiero el color azul']) {
     const r = await ejecutarRoco(frase, 'Roco', tx, f.hacer)
     expect(r.text).toBe(tx.comando.noEntendi)
   }
@@ -182,6 +191,7 @@ test('/roco acepta los subcomandos en inglés', async () => {
   await ejecutarRoco('language auto', 'Roco', tx, f.hacer)
   expect(f.guardados).toEqual([
     ['roco.tema', 'oceano'],
+    ['roco.acento', ''],
     ['roco.personaje', 'gato'],
     ['roco.idioma', 'auto'],
   ])
@@ -196,6 +206,22 @@ test('/roco ayuda usa el nombre elegido', async () => {
   const r = await ejecutarRoco('ayuda', 'Michi', tx, falso().hacer)
   expect(r.text.includes('Michi')).toBe(true)
   expect(r.text.includes('/roco:crear')).toBe(true)
+})
+
+test('/roco entiende frases largas e ignora las palabras que no son color, tema, estilo ni mascota', async () => {
+  const f = falso()
+  await ejecutarRoco('haz la barra del color de roco como magma igual las letras de su nombre', 'Roco', tx, f.hacer)
+  await ejecutarRoco('color del naranja que tiene roco en su cuerpo', 'Roco', tx, f.hacer)
+  expect(f.guardados).toEqual([
+    ['roco.personaje', 'roco'],
+    ['roco.tema', 'magma'],
+    ['roco.acento', ''],
+    ['roco.acento', '#ff8a3d'],
+  ])
+  // El molde literal no es un color: el mensaje da ejemplos reales.
+  const r = await ejecutarRoco('color #rrggbb,', 'Roco', tx, f.hacer)
+  expect(r.text).toBe(tx.comando.colorInvalido)
+  expect(tx.comando.colorInvalido).toContain('/roco color naranja')
 })
 
 test('leerOpciones: el color propio gana sobre el tema y sobre auto; uno inválido se ignora', () => {
