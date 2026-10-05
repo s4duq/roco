@@ -1,0 +1,16 @@
+{
+  "name": "roco",
+  "version": "0.4.0",
+  "private": true,
+  "description": "Conversor de imágenes y pruebas de Roco. El plugin no lo necesita: va aquí y no en la raíz para que instalar el plugin no corra npm.",
+  "scripts": {
+    "personaje": "node personaje.mjs",
+    "test": "node --test pruebas.mjs galeria.mjs"
+  },
+  "engines": {
+    "node": ">=22.18"
+  },
+  "devDependencies": {
+    "jimp": "^1.6.1"
+  }
+}

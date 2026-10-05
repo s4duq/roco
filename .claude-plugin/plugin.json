@@ -1,0 +1,99 @@
+{
+  "name": "roco",
+  "version": "0.4.0",
+  "description": "Pixel-art mascot that reacts live to what Claude does. Pick one of 8, recolor it or create your own with /roco:crear. Mascota pixel art para Claude Code.",
+  "author": {
+    "name": "s4duq"
+  },
+  "homepage": "https://github.com/s4duq/roco",
+  "repository": "https://github.com/s4duq/roco",
+  "license": "MIT",
+  "keywords": [
+    "mascot",
+    "mascota",
+    "pixel-art",
+    "status",
+    "fun"
+  ],
+  "types": "./types/index.d.ts",
+  "userConfig": {
+    "personaje": {
+      "type": "string",
+      "title": "Personaje",
+      "description": "Id del personaje: roco, uno de /roco personaje o uno creado con /roco:crear",
+      "default": "roco"
+    },
+    "nombre": {
+      "type": "string",
+      "title": "Nombre",
+      "description": "Nombre personalizado (máx. 16 caracteres)",
+      "default": ""
+    },
+    "tema": {
+      "type": "string",
+      "title": "Tema de color",
+      "description": "Paleta de colores de Roco",
+      "default": "magma",
+      "options": [
+        "magma",
+        "oceano",
+        "bosque",
+        "lavanda",
+        "mono",
+        "auto"
+      ]
+    },
+    "acento": {
+      "type": "string",
+      "title": "Color propio",
+      "description": "#rrggbb para la franja; vacío = el color del tema",
+      "default": ""
+    },
+    "estilo": {
+      "type": "string",
+      "title": "Estilo de la franja",
+      "description": "Tamaño y nivel de detalle",
+      "default": "completo",
+      "options": [
+        "completo",
+        "compacto",
+        "minimo"
+      ]
+    },
+    "campos": {
+      "type": "string",
+      "title": "Campos visibles",
+      "description": "Lista separada por comas de campos a mostrar",
+      "default": "estado,acciones,uso,sesion,reinicio,contadores"
+    },
+    "idioma": {
+      "type": "string",
+      "title": "Idioma",
+      "description": "Idioma de los textos (auto = el del sistema)",
+      "default": "auto",
+      "options": [
+        "auto",
+        "es",
+        "en"
+      ]
+    },
+    "avisoTurnos": {
+      "type": "number",
+      "title": "Aviso de turnos",
+      "description": "Turnos antes de recomendar conversación nueva (0 apaga)",
+      "default": 20
+    },
+    "avisoContexto": {
+      "type": "number",
+      "title": "Aviso de contexto (%)",
+      "description": "Porcentaje de contexto antes de avisar (0 apaga)",
+      "default": 70
+    },
+    "avisoCuota": {
+      "type": "number",
+      "title": "Aviso de cuota 5 h (%)",
+      "description": "Porcentaje de cuota de 5 h antes de avisar (0 apaga)",
+      "default": 80
+    }
+  }
+}
